@@ -40,4 +40,7 @@ io.sockets.on('connection', function(socket) {
 	socket.on('disconnect', function() {
 		console.log('user disconnected');
 	});
+	socket.on('webrtc', function(data) {
+		socket.broadcast.emit('webrtc', data);
+	});
 });
