@@ -21,7 +21,7 @@ app.get('/', function(req, res) {
 // web-sockets
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket) {
-	socket.emit('test', {message: "test message from server"});
+	socket.emit('test', {message: "Test message from server"});
 	socket.on('test', function(data) {
 		console.log(data.message);
 	});
@@ -29,16 +29,13 @@ io.sockets.on('connection', function(socket) {
 		socket.broadcast.emit('offer', data);
 	});
 	socket.on('answer', function(data) {
-		socket.emit('answer', data);
+		socket.broadcast.emit('answer', data);
 	});
-	socket.on('ice1', function(data) {
-		socket.emit('ice1', data);
-	});
-	socket.on('ice2', function(data) {
-		socket.emit('ice2', data);
+	socket.on('ice', function(data) {
+		socket.broadcast.emit('ice', data);
 	});
 	socket.on('hangup', function(data) {
-		socket.emit('hangup', data);
+		socket.broadcast.emit('hangup', data);
 	});
 	socket.on('disconnect', function() {
 		console.log('user disconnected');
