@@ -5,10 +5,10 @@ var credentials = {
 	key:  fs.readFileSync('./key.pem'),
 	cert: fs.readFileSync('./cert.pem')
 };
-var https = require('https');
+var https = require('http');
 var HOST = process.env.IP || 'localhost';
 app.set('port', process.env.PORT || 4200);
-var server = https.createServer(credentials, app).listen(app.get('port'), () => {
+var server = https.createServer(app).listen(app.get('port'), () => {
 	console.log("Socket server listening on https://%s:%s", HOST, app.get('port'));
 });
 
