@@ -23,7 +23,7 @@ var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket) {
 	socket.emit('test', {message: "test message from server"});
 	socket.on('test', function(data) {
-		console.log("timer: " + Date.now() + ", " + data);
+		console.log(data.message);
 	});
 	socket.on('offer', function(data) {
 		socket.broadcast.emit('offer', data);
