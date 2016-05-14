@@ -1,37 +1,31 @@
 var express = require('express');
 app = express();
-app.use(express.static(__dirname + '/public'));
 var fs = require('fs');
-var options = {
+var credentials = {
 	key:  fs.readFileSync('./key.pem'),
 	cert: fs.readFileSync('./cert.pem')
 };
-var https = require('http');
-var HOST = 'localhost';
-var PORT = process.env.PORT || 4200;
-// var server = https.createServer(options, app).listen(PORT);
-var server = https.createServer(app).listen(PORT);
-console.log('HTTPS Server listening on %s:%s', HOST, PORT);
+var https = require('https');
+var HOST = process.env.IP || 'localhost';
+app.set('port', process.env.PORT || 4200);
+var server = https.createServer(credentials, app).listen(app.get('port'), () => {
+	console.log("Socket server listening on https://%s:%s", HOST, app.get('port'));
+});
 
 // routes
 app.get('/', function(req, res) {
-	res.sendFile(__dirname + '/dashboard.html');
+	// res.sendFile(__dirname + '/dashboard.html');
+	res.send("Received GET request");
 });
 
 // web-sockets
 var io = require('socket.io').listen(server);
-io.sockets.on('connection', function(socket) { // При подключении
-	// отправим сообщение
-	socket.emit('server event', { event: 'server' });
-	// и объявим обработчик события при поступлении сообщения от клиента.
-	socket.on('client event', function(data) {
-		console.log('timer: '+Date.now()+', ', data);
+io.sockets.on('connection', function(socket) {
+	socket.emit('test', {message: "test message from server"});
+	socket.on('test', function(data) {
+		console.log("timer: " + Date.now() + ", " + data);
 	});
-	// При получении сообщения 'offer':
-	socket.on('offer', function(data) { // т.к. клиентское соединение одно,
-		// отправим сообщение обратно через тот же сокет
-		// socket.emit('offer', data);
-		// Если необходимо переслать сообщение по всем соединениям, кроме отправителя:
+	socket.on('offer', function(data) {
 		socket.broadcast.emit('offer', data);
 	});
 	socket.on('answer', function(data) {
