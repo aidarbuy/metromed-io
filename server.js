@@ -13,7 +13,6 @@ var server = https.createServer(app).listen(app.get('port'), () => {
 });
 
 app.get('/', function(req, res) {
-	// res.sendFile(__dirname + '/dashboard.html');
 	res.send("Received GET request");
 });
 
