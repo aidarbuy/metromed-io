@@ -1,5 +1,5 @@
 var express = require('express');
-app = express();
+var app = express();
 var fs = require('fs');
 var credentials = {
 	key:  fs.readFileSync('./key.pem'),
@@ -12,13 +12,11 @@ var server = https.createServer(app).listen(app.get('port'), () => {
 	console.log("Socket server listening on https://%s:%s", HOST, app.get('port'));
 });
 
-// routes
 app.get('/', function(req, res) {
 	// res.sendFile(__dirname + '/dashboard.html');
 	res.send("Received GET request");
 });
 
-// web-sockets
 var io = require('socket.io').listen(server);
 io.sockets.on('connection', function(socket) {
 	socket.emit('test', {message: "Test message from server"});
